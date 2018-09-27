@@ -22,9 +22,8 @@ public class Raymond extends Algorithm {
 			sendTo(i, new IntegerMessage(getId()));
 		}
 
-		/* Map a neighbor with the linked door. */
-		Map<Integer, Integer> neighborDoor =
-			new HashMap<>(this.nodeDegree);
+		int currentParentNode = getNetSize();
+		int currentParentDoor = -1;
 
 		/* Waits message from each neighbors. */
 		for (int i = 0; i < this.nodeDegree; ++i) {
@@ -32,16 +31,20 @@ public class Raymond extends Algorithm {
 			Message msg = receive(door);
 			int fromNode = (int) msg.getData();
 			int doorNum = door.getNum();
-			System.out.println("[" + getId() + " ]" +
+			System.out.println("[" + getId() + "]" +
 				" receive message from: " + fromNode +
 				" on door: " + doorNum);
-			neighborDoor.put(fromNode, doorNum);
+
+			/* Update parent door value. If needed. */
+			if (currentParentNode > fromNode) {
+				currentParentNode = fromNode;
+				currentParentDoor = doorNum;
+			}
 		}
 
-		/* Find the parent door. */
-		Map.Entry<Integer, Integer> min =
-			Collections.min(neighborDoor.entrySet(),
-				Comparator.comparing(Map.Entry::getValue));
-		System.out.print("[" + getId() + "]" + " parent door: " + min.getValue());
+		/* Set the founded parent door. */
+		this.parentDoor = currentParentDoor;
+		System.out.println("[" + getId() + "] parent door is: "
+				+ this.parentDoor);
 	}
 }
