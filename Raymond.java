@@ -108,7 +108,11 @@ public class Raymond extends Algorithm {
 			this.queue.add(SELF);
 
 			if (this.state == State.IDLE) {
+				System.out.println("[" + getId() 
+						+ "] state: requesting");
 				this.state = State.REQUESTING;
+				System.out.println("[" + getId() 
+						+ "] send request critical section"); 
 				sendTo(door, new StringMessage("REQUEST_CS"));
 			}
 		}
@@ -116,17 +120,25 @@ public class Raymond extends Algorithm {
 
 	private void releaseCriticalSection() {
 		System.out.println("[" + getId() + "] release critical section");
+		System.out.println("[" + getId() + "] state: idle");
 		this.state = State.IDLE;
 
 		if (!this.queue.isEmpty()) {
+			System.out.println("[" + getId()
+					+ "] remove head of queue");
 			this.parentDoor = this.queue.remove(0);
 			System.out.println("[" + getId() + "] send token to: "
 					+ this.parentDoor);
 			sendTo(this.parentDoor, new StringMessage("TOKEN"));
 
 			if (!this.queue.isEmpty()) {
+				System.out.println("[" + getId() + 
+						"] state: RESQUESTING");
 				this.state = State.REQUESTING;
-				sendTo(this.parentDoor, new StringMessage("REQUEST_CS"));
+				System.out.println("[" + getId() +
+						"] send request critical section");
+				sendTo(this.parentDoor, 
+						new StringMessage("REQUEST_CS"));
 			}
 		}
 	}
@@ -135,14 +147,25 @@ public class Raymond extends Algorithm {
 		System.out.println("[" + getId() + "] receive token request");
 
 		if (this.parentDoor == NONE && this.state == State.IDLE) {
+			System.out.println("[" + getId() 
+					+ "] update parent door");
 			this.parentDoor = fromDoor;
+			System.out.println("[" + getId() 
+					+ "] send token to parent");
 			sendTo(this.parentDoor, new StringMessage("TOKEN"));
 		} else if (this.parentDoor != fromDoor) {
+			System.out.println("[" + getId() 
+					+ "] add incoming door to queue");
 			this.queue.add(fromDoor);
 
 			if (this.state == State.IDLE) {
+				System.out.println("[" + getId() 
+						+ "] state: REQUESTING");
 				this.state = State.REQUESTING;
-				sendTo(this.parentDoor, new StringMessage("REQUEST_CS"));
+				System.out.println("[" + getId() 
+						+ "] send request critical section");
+				sendTo(this.parentDoor,
+						new StringMessage("REQUEST_CS"));
 			}
 		}
 	}
@@ -150,36 +173,62 @@ public class Raymond extends Algorithm {
 	private void receiveToken(int fromDoor) {
 		System.out.println("[" + getId() + "] receive token");
 
+		System.out.println("[" + getId() 
+				+ "] update parent door with top of queue");
 		this.parentDoor = this.queue.remove(0);
 
 		if (this.parentDoor == SELF) {
+			System.out.println("[" + getId() 
+					+ "] update parent door to none");
 			this.parentDoor = NONE;
 
 			if (this.state == State.REQUESTING) {
 				enterCriticalSection();
 			}
 		} else {
+			System.out.println("[" + getId() 
+					+ "] send token to parent door");
 			sendTo(this.parentDoor, new StringMessage("TOKEN"));
 
 			if (!this.queue.isEmpty()) {
+				System.out.println("[" + getId() 
+						+ "] state: requesting");
 				this.state = State.REQUESTING;
-				sendTo(this.parentDoor, new StringMessage("REQUEST_CS"));
+				System.out.println("[" + getId()
+						+ "] request critical section");
+				sendTo(this.parentDoor,
+						new StringMessage("REQUEST_CS"));
 			} else {
+				System.out.println("[" + getId()
+						+ "] state: idle");
 				this.state = State.IDLE;
 			}
 		}
 	}
 
 	private void enterCriticalSection() {
-		System.out.println("[" + getId() + "] enter in critical section");
+		System.out.println("[" + getId()
+				+ "] enter in critical section");
 
+		System.out.println("[" + getId()
+				+ "] state: in critical section");
 		this.state = State.IN_CRITICAL_SECTION;
+
 		try {
 			/* Pause 4 secondes. */
-			Thread.sleep(4000);
+			System.out.print("[" + getId() + "]");
+			Thread.sleep(1000);
+			System.out.print(" .");
+			Thread.sleep(1000);
+			System.out.print(".");
+			Thread.sleep(1000);
+			System.out.print(".");
+			Thread.sleep(1000);
+			System.out.println(".");
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
+
 		releaseCriticalSection();
 
 	}
