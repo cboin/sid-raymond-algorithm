@@ -110,6 +110,7 @@ public class Raymond extends Algorithm {
 			if (this.state == State.IDLE) {
 				System.out.println("[" + getId() 
 						+ "] state: requesting");
+				putProperty("label", "P");
 				this.state = State.REQUESTING;
 				System.out.println("[" + getId() 
 						+ "] send request critical section"); 
@@ -121,6 +122,7 @@ public class Raymond extends Algorithm {
 	private void releaseCriticalSection() {
 		System.out.println("[" + getId() + "] release critical section");
 		System.out.println("[" + getId() + "] state: idle");
+		putProperty("label", "N");
 		this.state = State.IDLE;
 
 		if (!this.queue.isEmpty()) {
@@ -161,6 +163,7 @@ public class Raymond extends Algorithm {
 			if (this.state == State.IDLE) {
 				System.out.println("[" + getId() 
 						+ "] state: REQUESTING");
+				putProperty("label", "P");
 				this.state = State.REQUESTING;
 				System.out.println("[" + getId() 
 						+ "] send request critical section");
@@ -193,6 +196,7 @@ public class Raymond extends Algorithm {
 			if (!this.queue.isEmpty()) {
 				System.out.println("[" + getId() 
 						+ "] state: requesting");
+				putProperty("label", "P");
 				this.state = State.REQUESTING;
 				System.out.println("[" + getId()
 						+ "] request critical section");
@@ -201,7 +205,6 @@ public class Raymond extends Algorithm {
 			} else {
 				System.out.println("[" + getId()
 						+ "] state: idle");
-				this.state = State.IDLE;
 			}
 		}
 	}
@@ -212,6 +215,7 @@ public class Raymond extends Algorithm {
 
 		System.out.println("[" + getId()
 				+ "] state: in critical section");
+		putProperty("label", "U");
 		this.state = State.IN_CRITICAL_SECTION;
 
 		try {
