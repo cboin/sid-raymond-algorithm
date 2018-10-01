@@ -29,6 +29,7 @@ public class Raymond extends Algorithm {
 	public void init() {
 		this.nodeDegree = getArity();
 		this.queue = new LinkedList<Integer>();
+		putProperty("label", "N");
 		this.state = State.IDLE;
 
 		/* the node broadcast a message to its neighbors. */
@@ -136,6 +137,7 @@ public class Raymond extends Algorithm {
 			if (!this.queue.isEmpty()) {
 				System.out.println("[" + getId() + 
 						"] state: RESQUESTING");
+				putProperty("label", "P");
 				this.state = State.REQUESTING;
 				System.out.println("[" + getId() +
 						"] send request critical section");
@@ -205,6 +207,8 @@ public class Raymond extends Algorithm {
 			} else {
 				System.out.println("[" + getId()
 						+ "] state: idle");
+				this.state = State.IDLE;
+				putProperty("label", "N");
 			}
 		}
 	}
