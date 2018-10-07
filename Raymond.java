@@ -62,6 +62,13 @@ public class Raymond extends Algorithm {
 		System.out.println("[" + getId() + "] parent door is: "
 				+ this.parentDoor);
 
+		try {
+			/* Pause 2 secondes. */
+			Thread.sleep(2000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+
 		/* Inital topology. */
 		switch (getId()) {
 			case 0:
